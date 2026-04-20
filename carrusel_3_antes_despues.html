@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel 3: Antes y Después - Soy Leo AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Montserrat:wght@100;200;300;400;600&display=swap');
+
+        :root {
+            --bg-color: #050505; 
+            --accent: #f6c618;
+            --accent-secondary: #d2be7f;
+            --text-main: #e6e1d6;
+            --text-muted: #777777;
+            --slide-w: 1080px;
+            --slide-h: 1350px;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(246, 198, 24, 0.3);
+            padding: 12px 25px;
+            font-size: 13px;
+            font-weight: 300;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .slides-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            transform-origin: top center;
+            transform: scale(0.4);
+            width: max-content;
+        }
+
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        }
+
+        .inner-frame {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .content {
+            position: relative;
+            z-index: 20;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 82px;
+            font-weight: 200; 
+            line-height: 1.1;
+            margin: 0 0 40px 0;
+            letter-spacing: -3px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .footer {
+            padding: 0 100px 100px 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .handle {
+            font-size: 20px;
+            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .slide-number {
+            font-size: 20px;
+            color: var(--accent-secondary);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Hero Image Layout */
+        .hero-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, var(--bg-color) 100%),
+                        linear-gradient(to top, var(--bg-color) 30%, transparent 100%);
+            z-index: 2;
+        }
+
+        /* Timeline / Steps Style */
+        .step-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 2px solid var(--accent);
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0 0 15px 0;
+        }
+
+        .step-card p {
+            font-size: 32px;
+            font-weight: 200;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .comparison-tag {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="exportSlides()">Descargar Carrusel 3 (PNGs)</button>
+    </div>
+
+    <div class="slides-container" id="carousel">
+
+        <!-- SLIDE 1: HOOK -->
+        <div class="slide" id="slide-1">
+            <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=1000" class="hero-img">
+            <div class="vignette"></div>
+            <div class="inner-frame"></div>
+            <div class="content" style="justify-content: flex-end;">
+                <div class="comparison-tag">Evolución Hardware</div>
+                <h1 style="font-size: 100px;">La herramienta que mató la <span class="highlight">PC cara</span></h1>
+                <p style="font-size: 38px; font-weight: 200; color: var(--text-muted);">El setup de $8.000 USD ya no es ventaja competitiva.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">01</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: ANTES -->
+        <div class="slide" id="slide-2">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <div class="comparison-tag" style="border-color: #ff4d4d; color: #ff4d4d;">Workflow 2024</div>
+                <h1 style="font-size: 110px; color: #ff4d4d;">48 HORAS</h1>
+                <div class="step-card" style="border-color: #ff4d4d;">
+                    <p>Modelado en Revit → Exportación → Motor de Render → 8h de procesamiento → Iteración manual.</p>
+                </div>
+                <p style="font-size: 32px; font-weight: 200; color: var(--text-muted);">Un ciclo infinito de espera y costos de energía.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">02</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: PASO 1 -->
+        <div class="slide" id="slide-3">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h1 style="font-size: 60px;">PASO 1: <br><span class="highlight">SCREENSHOT</span></h1>
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1000" style="width: 100%; height: 500px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); margin: 40px 0; filter: grayscale(1) brightness(0.8);">
+                <p style="font-size: 34px; font-weight: 200;">Captura tu modelo base. <br>No necesita estar terminado. No necesita texturas.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">03</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: PASO 2 -->
+        <div class="slide" id="slide-4">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h1 style="font-size: 60px;">PASO 2: <br><span class="highlight">CLAUDE LEE</span></h1>
+                <div class="step-card">
+                    <h3>Análisis Geométrico</h3>
+                    <p>Claude analiza materiales, iluminación y posición del screenshot en segundos.</p>
+                </div>
+                <div class="step-card">
+                    <h3>Output JSON</h3>
+                    <p>Genera la estructura técnica necesaria para el motor de renderizado.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">04</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: PASO 3 -->
+        <div class="slide" id="slide-5">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h1 style="font-size: 60px;">PASO 3: <br><span class="highlight">FREEPIK CREA</span></h1>
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000" style="width: 100%; height: 450px; object-fit: cover; border: 1px solid var(--accent); margin: 30px 0;">
+                <p style="font-size: 34px; font-weight: 200;">Pegas el JSON. Seleccionas el modelo. <br><span class="highlight">Video animado listo en 8 minutos.</span></p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">05</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: DESPUÉS -->
+        <div class="slide" id="slide-6">
+            <div class="inner-frame"></div>
+            <div class="content" style="text-align: center;">
+                <div class="comparison-tag" style="border-color: var(--accent); color: var(--accent);">Workflow 2026</div>
+                <h1 style="font-size: 130px; margin: 20px 0;">15 MIN</h1>
+                <p style="font-size: 42px; font-weight: 200; line-height: 1.4;">De inicio a fin. <br>Sin GPU. Sin esperas. <br>Fotorrealismo puro.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">06</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CTA -->
+        <div class="slide" id="slide-7">
+            <div class="inner-frame"></div>
+            <div class="content" style="text-align: center; align-items: center;">
+                <h1 style="font-size: 82px;">¿Cuánto tiempo <br><span class="highlight">ahorrarías?</span></h1>
+                <p style="font-size: 38px; font-weight: 200; margin-bottom: 60px;">Si cada render te toma 8 horas y haces 3 por proyecto...</p>
+                <div style="border: 1px solid var(--accent); padding: 50px; width: 80%; background: rgba(246,198,24,0.02);">
+                    <p style="font-family: 'Montserrat', sans-serif; font-size: 32px; color: var(--accent); letter-spacing: 4px; text-transform: uppercase;">Comentá tu cálculo</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">soyleoai.com</div>
+                <div class="slide-number">07</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function exportSlides() {
+            const btn = document.querySelector('button');
+            btn.innerText = 'Exportando...';
+            btn.disabled = true;
+            await document.fonts.ready;
+            const container = document.getElementById('carousel');
+            container.style.transform = 'none';
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const slides = document.querySelectorAll('.slide');
+            for (let i = 0; i < slides.length; i++) {
+                const canvas = await html2canvas(slides[i], { scale: 2, backgroundColor: '#050505', useCORS: true });
+                const link = document.createElement('a');
+                link.download = `carrusel_03_antes_despues_slide_0${i + 1}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                await new Promise(r => setTimeout(r, 500));
+            }
+            container.style.transform = 'scale(0.4)';
+            btn.innerText = 'Descargar Carrusel 3 (PNGs)';
+            btn.disabled = false;
+            alert('¡Descarga completada!');
+        }
+    </script>
+</body>
+</html>

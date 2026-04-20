@@ -1,0 +1,307 @@
+:root {
+  --bg-color: #050505; 
+  --bg-app: #0a0a0a;
+  --accent: #f6c618;
+  --accent-secondary: #d2be7f;
+  --text-main: #e6e1d6;
+  --text-muted: #777777;
+  --card-glass: rgba(255, 255, 255, 0.02);
+  --card-border: rgba(255, 255, 255, 0.05);
+
+  --slide-w: 1080px;
+  --slide-h: 1350px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar styling for that premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-app); 
+}
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+/* Slide Premium Styles - Kept from original */
+.slide-card {
+  width: var(--slide-w);
+  height: var(--slide-h);
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+  padding: 100px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+}
+
+.slide-card::before {
+  content: '';
+  position: absolute;
+  top: -15%;
+  right: -15%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(246, 198, 24, 0.08) 0%, transparent 75%);
+  filter: blur(60px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.slide-card::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(210, 190, 127, 0.04) 0%, transparent 70%);
+  filter: blur(50px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.inner-frame {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-card h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 82px;
+  font-weight: 200; 
+  line-height: 1.15;
+  margin: 0 0 45px 0;
+  letter-spacing: -3px;
+  color: var(--text-main);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.slide-card .highlight {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.slide-card h2 {
+  font-size: 20px;
+  color: var(--accent);
+  margin: 0 0 25px 0;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.slide-card p.subtext {
+  font-size: 38px;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 200;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+}
+
+.slide-img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 60px;
+  filter: grayscale(0.8) contrast(1.2) brightness(0.9);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+.slide-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 50px 0;
+}
+
+.slide-card li {
+  font-size: 34px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  color: var(--text-main);
+  font-weight: 200;
+  padding: 25px 30px;
+  background: rgba(255,255,255,0.015);
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 4px;
+}
+
+.slide-card li::before {
+  content: '';
+  width: 15px;
+  height: 1px;
+  background: var(--accent);
+  margin-top: 25px;
+  margin-right: 25px;
+  flex-shrink: 0;
+}
+
+.step-box {
+  background: rgba(255, 255, 255, 0.01);
+  border-left: 1px solid var(--accent);
+  padding: 30px 40px;
+  margin-bottom: 25px;
+  backdrop-filter: blur(5px);
+}
+
+.step-box h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: var(--accent-secondary);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: 400;
+}
+
+.step-box p {
+  font-size: 32px;
+  margin: 0;
+  font-weight: 200;
+  line-height: 1.4;
+  color: var(--text-main);
+}
+
+.footer {
+  position: relative;
+  margin-top: 50px;
+  padding-top: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  z-index: 10;
+}
+
+.handle {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.slide-number {
+  font-size: 20px;
+  font-weight: 200;
+  color: var(--accent-secondary);
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 2px;
+}
+
+.cta-box {
+  border: 1px solid rgba(246, 198, 24, 0.2);
+  padding: 45px;
+  text-align: center;
+  margin-top: 50px;
+  background: rgba(246, 198, 24, 0.01);
+}
+
+.cta-box p {
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--accent);
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+}
+
+/* App UI Elements */
+.btn-primary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(246, 198, 24, 0.3);
+  padding: 12px 25px;
+  font-size: 13px;
+  font-weight: 300;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(246, 198, 24, 0.05);
+  box-shadow: 0 0 30px rgba(246, 198, 24, 0.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-modern {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  padding: 15px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  min-height: 200px;
+}
+.input-modern:focus {
+  border-color: rgba(246, 198, 24, 0.3);
+}
+
+/* Formatted Text Input Container */
+.panel {
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

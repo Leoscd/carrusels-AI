@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Carrusel 2 - Soy Leo AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #0a0a0a;
+            --accent: #f6c618;
+            --accent-secondary: #d2be7f;
+            --text-main: #e6e1d6;
+            --text-muted: #888888;
+            
+            /* Slide dimensions 4:5 ratio for Instagram Portrait */
+            --slide-w: 1080px;
+            --slide-h: 1350px;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 15px 30px;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        button:hover {
+            background: var(--accent);
+            color: black;
+        }
+
+        .slides-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            transform-origin: top center;
+            transform: scale(0.4);
+            width: max-content;
+        }
+
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Top badge container */
+        .top-badge-container {
+            margin-bottom: 80px;
+        }
+
+        .badge {
+            background-color: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            font-size: 18px;
+            font-weight: 400;
+            padding: 8px 16px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 80px;
+            font-weight: 300;
+            line-height: 1.1;
+            margin: 0 0 50px 0;
+            color: var(--text-main);
+            letter-spacing: -2px;
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        p.text-block {
+            font-size: 38px;
+            color: var(--text-muted);
+            margin: 0 0 25px 0;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+        
+        strong.white-text {
+            color: var(--text-main);
+            font-weight: 400;
+        }
+
+        .note-box {
+            border-left: 3px solid var(--accent);
+            padding-left: 25px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .note-box p {
+            font-size: 34px;
+            color: var(--accent);
+            font-style: italic;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .regular-note {
+            border-left: 3px solid #333;
+            padding-left: 25px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .regular-note p {
+            font-size: 34px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .footer {
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+            margin-top: 40px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .handle {
+            font-size: 20px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: 400;
+        }
+
+        .slide-number {
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--accent-secondary);
+        }
+        
+        .slide-number span {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0;
+        }
+
+        li {
+            font-size: 34px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            font-weight: 300;
+        }
+
+        li::before {
+            content: '—';
+            color: var(--accent);
+            margin-right: 20px;
+        }
+
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="exportSlides()">Descargar Carrusel (PNGs)</button>
+    </div>
+
+    <!-- Carrusel 2: GEMMA offline -->
+    <div class="slides-container" id="carousel">
+
+        <!-- SLIDE 1: HOOK -->
+        <div class="slide" id="slide-1">
+            <div class="top-badge-container">
+                <div class="badge">IA PARA ARQUITECTOS</div>
+            </div>
+            <div class="content">
+                <h1>IA sin <span class="highlight">internet</span>, <br>sin privacidad cedida.</h1>
+                
+                <div class="note-box" style="margin-top: 80px;">
+                    <p style="font-style: normal; color: var(--text-muted);">
+                        <strong style="color: var(--accent); font-style: normal;">¿ES POSIBLE?</strong> Sí, con GEMMA.
+                    </p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">01 <span>/ 06</span></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: PROBLEMA -->
+        <div class="slide" id="slide-2">
+            <div class="top-badge-container">
+                <div class="badge">EL PROBLEMA</div>
+            </div>
+            <div class="content">
+                <h1>Enviás <span class="highlight">datos a la nube.</span></h1>
+                
+                <ul>
+                    <li>Tus presupuestos suben a servidores.</li>
+                    <li>Tus planos quedan registrados.</li>
+                    <li>Depende de conexión a internet.</li>
+                    <li>Vulnerabilidad si hay caída.</li>
+                </ul>
+                
+                <div class="note-box">
+                    <p>Eso es perder control de tu información.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">02 <span>/ 06</span></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: SOLUCIÓN -->
+        <div class="slide" id="slide-3">
+            <div class="top-badge-container">
+                <div class="badge">LA SOLUCIÓN</div>
+            </div>
+            <div class="content">
+                <h1><span class="highlight">GEMMA:</span> Modelo de IA local en tu teléfono.</h1>
+                
+                <p class="text-block" style="margin-top: 60px;">
+                    Corre 100% offline, sin necesidad de conexión a internet.
+                </p>
+                <div class="regular-note">
+                    <p><strong class="white-text">0 bytes</strong> de tus datos salen de tu dispositivo.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">03 <span>/ 06</span></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: CASOS DE USO -->
+        <div class="slide" id="slide-4">
+            <div class="top-badge-container">
+                <div class="badge">CASOS DE USO</div>
+            </div>
+            <div class="content">
+                <h1>Cuándo <span class="highlight">GEMMA</span> es perfecto:</h1>
+                
+                <ul>
+                    <li><strong class="white-text">Analizar fotos de planos</strong> (sin subirlas).</li>
+                    <li><strong class="white-text">Procesar documentos confidenciales</strong>.</li>
+                    <li><strong class="white-text">Trabajar en terrenos</strong> sin conexión.</li>
+                    <li><strong class="white-text">Mantener datos</strong> de clientes locales.</li>
+                </ul>
+                
+                <div class="note-box">
+                    <p>Cero dependencia de internet, cero riesgo de fuga.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">04 <span>/ 06</span></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: COMPARATIVA -->
+        <div class="slide" id="slide-5">
+            <div class="top-badge-container">
+                <div class="badge">COMPARATIVA</div>
+            </div>
+            <div class="content">
+                <h1>GEMMA <span class="highlight">vs</span> Claude <br>(Internet)</h1>
+                
+                <div class="regular-note" style="border-left-color: var(--accent); margin-top: 60px;">
+                    <p><strong style="color: var(--accent);">GEMMA:</strong> Privado total, offline, más rápido en teléfono.</p>
+                </div>
+                
+                <div class="regular-note" style="margin-top: 40px;">
+                    <p><strong class="white-text">Claude:</strong> Más poderoso, acceso a herramientas, requiere internet.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">05 <span>/ 06</span></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: CTA -->
+        <div class="slide" id="slide-6">
+            <div class="top-badge-container">
+                <div class="badge">SIGUIENTE PASO</div>
+            </div>
+            <div class="content">
+                <h1 style="font-size: 70px;">¿Trabajas con datos <span class="highlight">sensibles</span> del cliente?</h1>
+                
+                <p class="text-block">
+                    GEMMA es tu solución para privacidad total.
+                </p>
+                
+                <div class="note-box" style="margin-top: 60px;">
+                    <p><strong style="color: var(--accent); font-style: normal;">DM:</strong> Consultá cómo implementar</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">soyleoai.com</div>
+                <div class="slide-number">06 <span>/ 06</span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function exportSlides() {
+            const btn = document.querySelector('button');
+            btn.innerText = 'Exportando...';
+            btn.disabled = true;
+
+            await document.fonts.ready;
+
+            const container = document.getElementById('carousel');
+            container.style.transform = 'none';
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const slides = document.querySelectorAll('.slide');
+            
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                try {
+                    const canvas = await html2canvas(slide, {
+                        scale: 2,
+                        backgroundColor: '#0a0a0a',
+                        useCORS: true,
+                        logging: false
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = `carrusel_02_gemma_slide_0${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    await new Promise(r => setTimeout(r, 500));
+                } catch (error) {
+                    console.error('Error exporting slide ' + (i+1), error);
+                }
+            }
+
+            container.style.transform = 'scale(0.4)';
+
+            btn.innerText = 'Descargar Carrusel (PNGs)';
+            btn.disabled = false;
+            alert('¡Descarga completada!');
+        }
+    </script>
+</body>
+</html>

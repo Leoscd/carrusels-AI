@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel 2: Claude vs ChatGPT - Soy Leo AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Montserrat:wght@100;200;300;400;600&display=swap');
+
+        :root {
+            --bg-color: #050505; 
+            --accent: #f6c618;
+            --accent-secondary: #d2be7f;
+            --text-main: #e6e1d6;
+            --text-muted: #777777;
+            --card-glass: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
+            --slide-w: 1080px;
+            --slide-h: 1350px;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(246, 198, 24, 0.3);
+            padding: 12px 25px;
+            font-size: 13px;
+            font-weight: 300;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            background: rgba(246, 198, 24, 0.05);
+            box-shadow: 0 0 30px rgba(246, 198, 24, 0.1);
+        }
+
+        .slides-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            transform-origin: top center;
+            transform: scale(0.4);
+            width: max-content;
+        }
+
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -15%;
+            right: -15%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(246, 198, 24, 0.08) 0%, transparent 75%);
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(210, 190, 127, 0.04) 0%, transparent 70%);
+            filter: blur(50px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .inner-frame {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 82px;
+            font-weight: 200; 
+            line-height: 1.15;
+            margin: 0 0 45px 0;
+            letter-spacing: -3px;
+            color: var(--text-main);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--accent);
+            margin: 0 0 25px 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        p.subtext {
+            font-size: 38px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 200;
+            line-height: 1.5;
+            letter-spacing: -0.5px;
+        }
+
+        .vs-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 60px;
+        }
+
+        .logo-box {
+            width: 350px;
+            height: 350px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 100;
+            font-size: 40px;
+            letter-spacing: 5px;
+        }
+
+        .vs-circle {
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--accent);
+            font-size: 24px;
+            font-weight: 600;
+            background: rgba(246, 198, 24, 0.05);
+        }
+
+        .comparison-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .comp-card {
+            padding: 40px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 4px;
+        }
+
+        .comp-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            color: var(--accent-secondary);
+        }
+
+        .comp-card p {
+            font-size: 28px;
+            font-weight: 200;
+            line-height: 1.4;
+        }
+
+        .comp-card.highlighted {
+            border-color: var(--accent);
+            background: rgba(246, 198, 24, 0.02);
+        }
+
+        .footer {
+            position: relative;
+            margin-top: 50px;
+            padding-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            z-index: 10;
+        }
+
+        .handle {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .slide-number {
+            font-size: 20px;
+            font-weight: 200;
+            color: var(--accent-secondary);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .cta-box {
+            border: 1px solid rgba(246, 198, 24, 0.2);
+            padding: 45px;
+            text-align: center;
+            margin-top: 50px;
+            background: rgba(246, 198, 24, 0.01);
+        }
+
+        .cta-box p {
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--accent);
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+        }
+        
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="exportSlides()">Descargar Carrusel Premium (PNGs)</button>
+    </div>
+
+    <div class="slides-container" id="carousel">
+
+        <!-- SLIDE 1: HOOK -->
+        <div class="slide" id="slide-1" style="padding: 0; justify-content: flex-end;">
+            
+            <!-- Imagen de fondo Full-Bleed -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                <img src="Imagnes para incorporar/claude-vs-chatgpt.png" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                
+                <!-- Máscara de bordes (Vignette Rectangular) -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 200px 50px var(--bg-color); pointer-events: none;"></div>
+                
+                <!-- Degradado inferior para legibilidad -->
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, var(--bg-color) 20%, rgba(5,5,5,0.8) 50%, transparent 100%);"></div>
+            </div>
+
+            <div class="inner-frame" style="z-index: 10;"></div>
+
+            <div class="content" style="padding: 100px; padding-bottom: 80px; justify-content: flex-end; z-index: 20;">
+                <h2 style="text-shadow: 0 2px 10px rgba(0,0,0,0.8); margin-bottom: 15px;">Diferencias Reales</h2>
+                <h1 style="font-size: 115px; margin-bottom: 25px; line-height: 1.1; text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);">No son lo <br><span class="highlight">mismo</span></h1>
+                <p class="subtext" style="color: var(--text-main); font-weight: 300; text-shadow: 0 5px 15px rgba(0,0,0,0.8); max-width: 800px;">Elegir la herramienta correcta define tu productividad.</p>
+            </div>
+            
+            <div class="footer" style="margin: 0 100px 100px 100px; z-index: 20;">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">01</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: DIFERENCIA 1 -->
+        <div class="slide" id="slide-2">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Capacidad Operativa</h2>
+                <h1>Ejecución vs <br><span class="highlight">Estática</span></h1>
+                <div class="comparison-split">
+                    <div class="comp-card highlighted">
+                        <h3>Claude Code</h3>
+                        <p>Ejecuta sistemas completos en tiempo real. Entrega resultados accionables.</p>
+                    </div>
+                    <div class="comp-card">
+                        <h3>ChatGPT</h3>
+                        <p>Genera bloques de código estático. Requiere que vos lo pruebes y corrijas.</p>
+                    </div>
+                </div>
+                <p class="subtext" style="margin-top: 40px; font-size: 32px;">Uno te deja pegado, el otro te da la solución.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">02</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: DIFERENCIA 2 -->
+        <div class="slide" id="slide-3">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Integraciones</h2>
+                <h1>Claude tiene <br><span class="highlight">Superpoderes</span></h1>
+                <div class="comp-card highlighted" style="margin-bottom: 30px;">
+                    <h3>MCP Servers</h3>
+                    <p>Conexión automática a tu sistema de archivos, web scraping nativo y automatización sin intermediarios.</p>
+                </div>
+                <div class="comp-card">
+                    <h3>ChatGPT</h3>
+                    <p>Limitado a su propio entorno. Te obliga a copiar y pegar datos constantemente.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">03</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: DIFERENCIA 3 -->
+        <div class="slide" id="slide-4">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Movilidad</h2>
+                <h1>Dispatch <br><span class="highlight">en Cowork</span></h1>
+                <div class="comp-card highlighted">
+                    <p style="font-size: 34px;">Desde el celular: "Claude, ejecutá este script en la PC y traeme los resultados".</p>
+                </div>
+                <p class="subtext" style="margin-top: 50px;">Control total de tu estudio desde cualquier lugar. Sincronización real vs procesos manuales.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">04</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: DIFERENCIA 4 -->
+        <div class="slide" id="slide-5">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Colaboración</h2>
+                <h1>Artifacts en <br><span class="highlight">tiempo real</span></h1>
+                <div class="comparison-split">
+                    <div class="comp-card highlighted">
+                        <h3>Claude</h3>
+                        <p>Edición colaborativa con previsualización inmediata del documento.</p>
+                    </div>
+                    <div class="comp-card">
+                        <h3>ChatGPT</h3>
+                        <p>Flujo lineal. Tenés que descargar o copiar para ver cambios.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">05</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: DIFERENCIA 5 -->
+        <div class="slide" id="slide-6">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Complejidad</h2>
+                <h1>Sistemas <br><span class="highlight">Multi-Agente</span></h1>
+                <div class="comp-card highlighted">
+                    <p>Claude orquesta múltiples agentes en paralelo para resolver problemas complejos de arquitectura y gestión.</p>
+                </div>
+                <p class="subtext" style="margin-top: 40px;">ChatGPT responde preguntas. Claude ejecuta procesos. Son ligas diferentes.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">06</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CTA -->
+        <div class="slide" id="slide-7">
+            <div class="inner-frame"></div>
+            <div class="content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                <h1 style="font-size: 82px; font-weight: 200; margin-bottom: 40px; line-height: 1.2;">¿Qué automatizarías <br>primero?</h1>
+                <p class="subtext" style="margin-bottom: 70px;">Si tuvieras estas herramientas hoy en tu estudio...</p>
+                
+                <div class="cta-box" style="width: 80%;">
+                    <p>COMENTÁ ABAJO</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">soyleoai.com</div>
+                <div class="slide-number">07</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function exportSlides() {
+            const btn = document.querySelector('button');
+            btn.innerText = 'Exportando...';
+            btn.disabled = true;
+
+            await document.fonts.ready;
+            
+            const container = document.getElementById('carousel');
+            container.style.transform = 'none';
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const slides = document.querySelectorAll('.slide');
+            
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                try {
+                    const canvas = await html2canvas(slide, {
+                        scale: 2,
+                        backgroundColor: '#050505',
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = `carrusel_02_vs_slide_0${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    await new Promise(r => setTimeout(r, 500));
+                } catch (error) {
+                    console.error('Error exporting slide ' + (i+1), error);
+                }
+            }
+
+            container.style.transform = 'scale(0.4)';
+            btn.innerText = 'Descargar Carrusel Premium (PNGs)';
+            btn.disabled = false;
+            alert('¡Descarga completada!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel 4: MCP Servers - Soy Leo AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Montserrat:wght@100;200;300;400;600&display=swap');
+
+        :root {
+            --bg-color: #050505; 
+            --accent: #f6c618;
+            --accent-secondary: #d2be7f;
+            --text-main: #e6e1d6;
+            --text-muted: #777777;
+            --card-glass: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
+            --slide-w: 1080px;
+            --slide-h: 1350px;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(246, 198, 24, 0.3);
+            padding: 12px 25px;
+            font-size: 13px;
+            font-weight: 300;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            background: rgba(246, 198, 24, 0.05);
+            box-shadow: 0 0 30px rgba(246, 198, 24, 0.1);
+        }
+
+        .slides-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            transform-origin: top center;
+            transform: scale(0.4);
+            width: max-content;
+        }
+
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -15%;
+            right: -15%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(246, 198, 24, 0.08) 0%, transparent 75%);
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(210, 190, 127, 0.04) 0%, transparent 70%);
+            filter: blur(50px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .inner-frame {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 82px;
+            font-weight: 200; 
+            line-height: 1.15;
+            margin: 0 0 45px 0;
+            letter-spacing: -3px;
+            color: var(--text-main);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--accent);
+            margin: 0 0 25px 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        p.subtext {
+            font-size: 38px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 200;
+            line-height: 1.5;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 60px;
+            filter: grayscale(0.8) contrast(1.2) brightness(0.9);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .comp-item {
+            padding: 30px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .comp-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0;
+        }
+
+        li {
+            font-size: 32px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            color: var(--text-main);
+            font-weight: 200;
+        }
+
+        li::before {
+            content: '';
+            width: 12px;
+            height: 1px;
+            background: var(--accent);
+            margin-top: 22px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-box {
+            background: rgba(255, 255, 255, 0.01);
+            border-left: 1px solid var(--accent);
+            padding: 30px 40px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(5px);
+        }
+
+        .step-box h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--accent-secondary);
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 400;
+        }
+
+        .step-box p {
+            font-size: 30px;
+            margin: 0;
+            font-weight: 200;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .footer {
+            position: relative;
+            margin-top: 50px;
+            padding-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            z-index: 10;
+        }
+
+        .handle {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .slide-number {
+            font-size: 20px;
+            font-weight: 200;
+            color: var(--accent-secondary);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .cta-box {
+            border: 1px solid rgba(246, 198, 24, 0.2);
+            padding: 45px;
+            text-align: center;
+            margin-top: 50px;
+            background: rgba(246, 198, 24, 0.01);
+        }
+
+        .cta-box p {
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--accent);
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+        }
+        
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="exportSlides()">Descargar Carrusel Premium (PNGs)</button>
+    </div>
+
+    <div class="slides-container" id="carousel">
+
+        <!-- SLIDE 1 -->
+        <div class="slide" id="slide-1">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000" class="slide-img" alt="Tecnología">
+                <h2>Claude + MCP</h2>
+                <h1>Claude ahora se conecta a <span class="highlight">todas tus herramientas</span></h1>
+                <p class="subtext">MCP Servers: La integración directa que lo cambia todo</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">01</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide" id="slide-2">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Evolución 2026</h2>
+                <h1>De procesar datos a <br><span class="highlight">ejecutar acciones</span></h1>
+                <div class="comparison">
+                    <div class="comp-item">
+                        <span class="comp-label" style="color: var(--text-muted);">Antes (2025)</span>
+                        <p style="font-size: 28px; font-weight: 200; color: var(--text-muted);">Copiar datos → Claude analiza → Copiar resultado → Pegar en Email/Slack.</p>
+                    </div>
+                    <div class="comp-item" style="border-color: var(--accent);">
+                        <span class="comp-label" style="color: var(--accent);">Ahora (2026)</span>
+                        <p style="font-size: 32px; font-weight: 300;">Claude accede a Drive → Lee → Actualiza → Publica en Slack automáticamente.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">02</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide" id="slide-3">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Definición Técnica</h2>
+                <h1>¿Qué son los <br><span class="highlight">MCP Servers?</span></h1>
+                <div class="step-box">
+                    <p>Son <strong>conectores universales</strong> que extienden las capacidades de Claude, permitiéndole interactuar con archivos, APIs y bases de datos de forma segura y sin intermediarios manuales.</p>
+                </div>
+                <p class="subtext" style="font-size: 32px; margin-top: 30px;">Potencia pura aplicada a tu flujo de trabajo diario.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">03</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide" id="slide-4">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Integraciones Clave</h2>
+                <h1>Ecosistema para <br><span class="highlight">Arquitectos</span></h1>
+                <ul>
+                    <li><strong>Google Drive:</strong> Gestión autónoma de archivos y memorias.</li>
+                    <li><strong>Gmail:</strong> Procesamiento de cotizaciones y facturas.</li>
+                    <li><strong>Slack:</strong> Reportes de obra automáticos para el equipo.</li>
+                    <li><strong>Notion:</strong> Sincronización de estados y bitácoras.</li>
+                    <li><strong>Calendar:</strong> Agendamiento inteligente de visitas a obra.</li>
+                </ul>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">04</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide" id="slide-5">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Caso Real</h2>
+                <h1>Actualización de <br><span class="highlight">40 presupuestos</span></h1>
+                <div class="step-box">
+                    <h3>01. Lectura</h3>
+                    <p>Claude accede a Drive y lee PDFs con precios de 2024.</p>
+                </div>
+                <div class="step-box">
+                    <h3>02. Proceso</h3>
+                    <p>Actualiza costos según base de datos 2026 en tiempo real.</p>
+                </div>
+                <div class="step-box">
+                    <h3>03. Output</h3>
+                    <p>Genera 40 PDFs nuevos en la carpeta correspondiente. Tiempo: 30 min.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">05</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6 -->
+        <div class="slide" id="slide-6">
+            <div class="inner-frame"></div>
+            <div class="content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                <h1 style="font-size: 82px; font-weight: 200; margin-bottom: 40px; line-height: 1.2;">¿Qué herramienta <br>quieres conectar?</h1>
+                <p class="subtext" style="margin-bottom: 70px;">Convierte a Claude en el centro de operaciones de tu estudio.</p>
+                
+                <div class="cta-box" style="width: 80%;">
+                    <p>CUÉNTAME EN DM</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">soyleoai.com</div>
+                <div class="slide-number">06</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function exportSlides() {
+            const btn = document.querySelector('button');
+            btn.innerText = 'Exportando...';
+            btn.disabled = true;
+
+            await document.fonts.ready;
+            
+            const container = document.getElementById('carousel');
+            container.style.transform = 'none';
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const slides = document.querySelectorAll('.slide');
+            
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                try {
+                    const canvas = await html2canvas(slide, {
+                        scale: 2,
+                        backgroundColor: '#050505',
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = `carrusel_04_premium_slide_0${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    await new Promise(r => setTimeout(r, 500));
+                } catch (error) {
+                    console.error('Error exporting slide ' + (i+1), error);
+                }
+            }
+
+            container.style.transform = 'scale(0.4)';
+            btn.innerText = 'Descargar Carrusel Premium (PNGs)';
+            btn.disabled = false;
+            alert('¡Descarga completada!');
+        }
+    </script>
+</body>
+</html>

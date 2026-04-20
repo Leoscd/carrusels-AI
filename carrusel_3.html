@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel 3: Cowork - Soy Leo AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Montserrat:wght@100;200;300;400;600&display=swap');
+
+        :root {
+            --bg-color: #050505; 
+            --accent: #f6c618;
+            --accent-secondary: #d2be7f;
+            --text-main: #e6e1d6;
+            --text-muted: #777777;
+            --card-glass: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
+            --slide-w: 1080px;
+            --slide-h: 1350px;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(246, 198, 24, 0.3);
+            padding: 12px 25px;
+            font-size: 13px;
+            font-weight: 300;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            background: rgba(246, 198, 24, 0.05);
+            box-shadow: 0 0 30px rgba(246, 198, 24, 0.1);
+        }
+
+        .slides-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            transform-origin: top center;
+            transform: scale(0.4);
+            width: max-content;
+        }
+
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 100px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -15%;
+            right: -15%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(246, 198, 24, 0.08) 0%, transparent 75%);
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(210, 190, 127, 0.04) 0%, transparent 70%);
+            filter: blur(50px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .inner-frame {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 82px;
+            font-weight: 200; 
+            line-height: 1.15;
+            margin: 0 0 45px 0;
+            letter-spacing: -3px;
+            color: var(--text-main);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--accent);
+            margin: 0 0 25px 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        p.subtext {
+            font-size: 38px;
+            color: var(--text-muted);
+            margin: 0;
+            font-weight: 200;
+            line-height: 1.5;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 60px;
+            filter: grayscale(0.8) contrast(1.2) brightness(0.9);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 50px 0;
+        }
+
+        li {
+            font-size: 34px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            color: var(--text-main);
+            font-weight: 200;
+            padding: 25px 30px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 4px;
+        }
+
+        li::before {
+            content: '';
+            width: 15px;
+            height: 1px;
+            background: var(--accent);
+            margin-top: 25px;
+            margin-right: 25px;
+            flex-shrink: 0;
+        }
+
+        .step-box {
+            background: rgba(255, 255, 255, 0.01);
+            border-left: 1px solid var(--accent);
+            padding: 30px 40px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(5px);
+        }
+
+        .step-box h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--accent-secondary);
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 400;
+        }
+
+        .step-box p {
+            font-size: 32px;
+            margin: 0;
+            font-weight: 200;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .footer {
+            position: relative;
+            margin-top: 50px;
+            padding-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            z-index: 10;
+        }
+
+        .handle {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .slide-number {
+            font-size: 20px;
+            font-weight: 200;
+            color: var(--accent-secondary);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .cta-box {
+            border: 1px solid rgba(246, 198, 24, 0.2);
+            padding: 45px;
+            text-align: center;
+            margin-top: 50px;
+            background: rgba(246, 198, 24, 0.01);
+        }
+
+        .cta-box p {
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--accent);
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+        }
+        
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="exportSlides()">Descargar Carrusel Premium (PNGs)</button>
+    </div>
+
+    <div class="slides-container" id="carousel">
+
+        <!-- SLIDE 1 -->
+        <div class="slide" id="slide-1">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1000" class="slide-img" alt="Oficina Diseño">
+                <h2>Cowork con Claude</h2>
+                <h1>Mientras diseñás, <span class="highlight">Claude trabaja</span> en background</h1>
+                <p class="subtext">Delegación inteligente de tareas técnicas</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">01</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide" id="slide-2">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Fricción Operativa</h2>
+                <h1>Tareas que interrumpen <br><span class="highlight">tu flujo creativo</span></h1>
+                <ul>
+                    <li>Generación de reportes semanales de obra</li>
+                    <li>Cómputos métricos y presupuestos</li>
+                    <li>Análisis de documentación normativa</li>
+                    <li>Clasificación de fotos de inspección</li>
+                </ul>
+                <p class="subtext">Pérdida estimada: 6-8 horas por semana.</p>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">02</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide" id="slide-3">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Ecosistema Cowork</h2>
+                <h1>Delegación real <br><span class="highlight">sin intervención</span></h1>
+                <div class="step-box">
+                    <h3>Background</h3>
+                    <p>Claude Code ejecuta tareas complejas en segundo plano en tu PC.</p>
+                </div>
+                <div class="step-box">
+                    <h3>Foco Total</h3>
+                    <p>Vos seguís trabajando en Revit, AutoCAD o Figma sin interrupciones.</p>
+                </div>
+                <div class="step-box">
+                    <h3>Notificación</h3>
+                    <p>Claude te avisa al finalizar. El entregable está listo en tu teléfono.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">03</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide" id="slide-4">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>Caso Real</h2>
+                <h1>Proyecto Casa Paz <br><span class="highlight">Automatizado</span></h1>
+                <div class="step-box">
+                    <h3>08:00 AM</h3>
+                    <p>Asigno: "Analiza 40 fotos de obra y genera reporte de métricas".</p>
+                </div>
+                <div class="step-box">
+                    <h3>Durante la mañana</h3>
+                    <p>Continúo con el diseño ejecutivo del proyecto en Revit.</p>
+                </div>
+                <div class="step-box">
+                    <h3>09:00 AM</h3>
+                    <p>Reporte finalizado y enviado. 3 horas de trabajo manual ahorradas.</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">04</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide" id="slide-5">
+            <div class="inner-frame"></div>
+            <div class="content">
+                <h2>La Ventaja Técnica</h2>
+                <h1>3 Horas de trabajo <br><span class="highlight">= 5 min de setup</span></h1>
+                <p class="subtext" style="margin-bottom: 40px;">Por cada tarea que delegues a Cowork.</p>
+                <ul>
+                    <li>Consistencia en la calidad de los reportes</li>
+                    <li>Reducción drástica del agotamiento mental</li>
+                    <li>Escalabilidad de tu estudio de arquitectura</li>
+                </ul>
+            </div>
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="slide-number">05</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6 -->
+        <div class="slide" id="slide-6">
+            <div class="inner-frame"></div>
+            <div class="content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                <h1 style="font-size: 82px; font-weight: 200; margin-bottom: 40px; line-height: 1.2;">¿Qué tarea quieres <br>delegar hoy?</h1>
+                <p class="subtext" style="margin-bottom: 70px;">Libera tu tiempo para lo que realmente importa: Diseñar.</p>
+                
+                <div class="cta-box" style="width: 80%;">
+                    <p>ESCRIBÍ TU TAREA EN DM</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="handle">soyleoai.com</div>
+                <div class="slide-number">06</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function exportSlides() {
+            const btn = document.querySelector('button');
+            btn.innerText = 'Exportando...';
+            btn.disabled = true;
+
+            await document.fonts.ready;
+            
+            const container = document.getElementById('carousel');
+            container.style.transform = 'none';
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const slides = document.querySelectorAll('.slide');
+            
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                try {
+                    const canvas = await html2canvas(slide, {
+                        scale: 2,
+                        backgroundColor: '#050505',
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = `carrusel_03_premium_slide_0${i + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    await new Promise(r => setTimeout(r, 500));
+                } catch (error) {
+                    console.error('Error exporting slide ' + (i+1), error);
+                }
+            }
+
+            container.style.transform = 'scale(0.4)';
+            btn.innerText = 'Descargar Carrusel Premium (PNGs)';
+            btn.disabled = false;
+            alert('¡Descarga completada!');
+        }
+    </script>
+</body>
+</html>
