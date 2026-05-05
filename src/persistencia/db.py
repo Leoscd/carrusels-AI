@@ -216,3 +216,54 @@ def limpiar_sesion(telegram_user_id: int) -> None:
     """Elimina la sesión activa del usuario (inicio de nuevo presupuesto)."""
     with cursor() as c:
         c.execute("DELETE FROM sesiones WHERE telegram_user_id=?", (telegram_user_id,))
+
+
+# ---- Historial conversacional (contexto extendido) ----
+
+def cargar_historial(telegram_user_id: int) -> list[dict]:
+    """Carga el historial de mensajes para un usuario.
+    
+    Devuelve lista de dicts con {rol: "user"|"assistant", contenido: str, timestamp: str}.
+    """
+    with cursor() as c:
+        row = c.execute(
+            "SELECT mensajes_json FROM conversaciones WHERE telegram_user_id=?",
+            (telegram_user_id,),
+        ).fetchone()
+    if row is None:
+        return []
+    return json.loads(row["mensajes_json"])
+
+
+def guardar_historial(
+    telegram_user_id: int,
+    empresa_id: str,
+    mensajes: list[dict],
+) -> None:
+    """Guarda o actualiza el historial de mensajes para un usuario.
+    
+    Args:
+        telegram_user_id: ID del usuario de Telegram.
+        empresa_id: ID de la empresa activa.
+        mensajes: Lista de dicts [{rol: "user"|"assistant", contenido: str}, ...].
+    """
+    with cursor() as c:
+        c.execute(
+            """INSERT INTO conversaciones(telegram_user_id, empresa_id, mensajes_json, updated_at)
+               VALUES(?, ?, ?, datetime('now'))
+               ON CONFLICT(telegram_user_id) DO UPDATE SET
+                 empresa_id=excluded.empresa_id,
+                 mensajes_json=excluded.mensajes_json,
+                 updated_at=datetime('now')""",
+            (
+                telegram_user_id,
+                empresa_id,
+                json.dumps(mensajes, ensure_ascii=False),
+            ),
+        )
+
+
+def limpiar_historial(telegram_user_id: int) -> None:
+    """Elimina todo el historial de mensajes del usuario."""
+    with cursor() as c:
+        c.execute("DELETE FROM conversaciones WHERE telegram_user_id=?", (telegram_user_id,))

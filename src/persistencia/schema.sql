@@ -61,3 +61,11 @@ CREATE TABLE IF NOT EXISTS sesiones (
     resultado_id      INTEGER REFERENCES presupuestos(id) ON DELETE SET NULL,
     updated_at        TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Conversaciones por empresa para contexto extendida
+CREATE TABLE IF NOT EXISTS conversaciones (
+    telegram_user_id INTEGER PRIMARY KEY,
+    empresa_id       TEXT NOT NULL,
+    mensajes_json    TEXT NOT NULL DEFAULT '[]',
+    updated_at       TEXT NOT NULL DEFAULT (datetime('now'))
+);
