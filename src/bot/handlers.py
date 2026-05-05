@@ -16,6 +16,7 @@ from src.config import settings
 from src.datos.loader import cargar_empresa, actualizar_precio_material, actualizar_precio_mano_obra, listar_materiales_con_descripcion, listar_mo_con_descripcion
 from src.metricas import tokens
 from src.orquestador import minimax_client, router
+from src.orquestador.agente import AgenteConversacional
 from src.persistencia import db
 from src.pdf import generador
 
@@ -455,6 +456,38 @@ def _actualizar_pdf_path(pid: int, path: Path) -> None:
     from src.persistencia.db import cursor
     with cursor() as c:
         c.execute("UPDATE presupuestos SET pdf_path=? WHERE id=?", (str(path), pid))
+
+
+# =============================================================================
+# Agente Conversacional (tool use)
+# =============================================================================
+
+
+# Instancia global del agente
+_agente_conversacional: AgenteConversacional | None = None
+
+
+def _get_agente() -> AgenteConversacional:
+    global _agente_conversacional
+    if _agente_conversacional is None:
+        _agente_conversacional = AgenteConversacional(modelo=settings.minimax_model)
+    return _agente_conversacional
+
+
+async def on_mensaje(chat_id: int, user_id: int, empresa_id: str, texto: str) -> str:
+    """Procesa mensaje usando el agente conversacional con tool use.
+    
+    Args:
+        chat_id: ID del chat de Telegram
+        user_id: ID del usuario
+        empresa_id: ID de la empresa
+        texto: Mensaje del usuario
+        
+    Returns:
+        Respuesta formateada para enviar al usuario
+    """
+    agente = _get_agente()
+    return await agente.procesar(str(user_id), empresa_id, texto)
 
 
 def registrar(app) -> None:  # type: ignore[no-untyped-def]
