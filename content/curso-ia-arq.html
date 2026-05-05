@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrusel — Curso IA para Arquitectos — @soy.leo_ai</title>
+<!-- CARRUSEL: "IA para Arquitectos - De 0 a Prompt" 
+PALETA: Mocha Mineral + Purple-Green
+TIPOGRAFIA: Cormorant Garamond + DM Mono + Inter
+MODO: BORRADOR 
+Fecha: 05/05/2026 -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-primary: #1C1410;
+  --bg-secondary: #251A12;
+  --bg-tertiary: #301F14;
+  --accent: #B8915A;
+  --accent-bright: #C9A870;
+  --accent-dim: rgba(184,145,90,0.35);
+  --accent-ghost: rgba(184,145,90,0.08);
+  --text-primary: #EDE0D0;
+  --text-secondary:rgba(237,224,208,0.60);
+  --text-tertiary: rgba(237,224,208,0.30);
+  --border: rgba(184,145,90,0.15);
+  --border-strong: rgba(184,145,90,0.30);
+  --source-color: rgba(237,224,208,0.20);
+  --electric: #00ff87;
+  --electric-soft: rgba(0,255,135,0.10);
+  --electric-border:rgba(0,255,135,0.30);
+  --purple: #7b5fff;
+  --purple-soft: rgba(123,95,255,0.10);
+  --purple-border: rgba(123,95,255,0.35);
+}
+body { background: #0e0b08; min-height: 100vh; display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 48px 20px; font-family: 'Inter', sans-serif; }
+.page-title { color: var(--accent); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; opacity: 0.6; }
+.slides-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: flex-start; max-width: 1200px; }
+.slide { width: 320px; height: 320px; position: relative; overflow: hidden; border-radius: 14px; flex-shrink: 0; background: var(--bg-primary); border: 1px solid var(--border); }
+.slide-num { position: absolute; bottom: 14px; right: 16px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-tertiary); letter-spacing: 1px; }
+.inner { position: absolute; inset: 22px; display: flex; flex-direction: column; justify-content: flex-end; }
+.inner.top { justify-content: flex-start; }
+.inner.center { justify-content: center; }
+.inner.between{ justify-content: space-between; }
+.bg-grain { position: absolute; inset: 0; background-image: radial-gradient(rgba(184,145,90,0.06) 1px, transparent 1px); background-size: 18px 18px; }
+.bg-glow-accent { position: absolute; bottom: -60px; right: -60px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(184,145,90,0.10) 0%, transparent 70%); pointer-events: none; }
+.bg-glow-electric { position: absolute; top: -50px; left: -50px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(0,255,135,0.07) 0%, transparent 70%); pointer-events: none; }
+.bg-glow-purple { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(123,95,255,0.09) 0%, transparent 70%); pointer-events: none; }
+.badge { display: inline-block; background: var(--accent-ghost); border: 1px solid var(--border-strong); color: var(--accent); font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 2px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 12px; width: fit-content; }
+.badge.electric { background: var(--electric-soft); border-color: var(--electric-border); color: var(--electric); }
+.badge.purple { background: var(--purple-soft); border-color: var(--purple-border); color: var(--purple); }
+.divider { width: 24px; height: 1px; background: var(--accent); margin-bottom: 12px; opacity: 0.7; }
+.headline { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 30px; color: var(--text-primary); line-height: 1.25; margin-bottom: 10px; letter-spacing: 0.3px; }
+.headline em { color: var(--accent); font-style: italic; }
+.headline span { color: var(--electric); font-style: normal; }
+.headline .purple { color: var(--purple); }
+.subhead { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.35; margin-bottom: 10px; letter-spacing: 0.2px; }
+.stat-big { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 64px; color: var(--accent); line-height: 1.0; margin-bottom: 4px; }
+.stat-big em { font-style: italic; }
+.stat-unit { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--accent); opacity: 0.6; text-transform: uppercase; margin-bottom: 10px; }
+.stat-desc { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-secondary); line-height: 1.55; }
+.bar-row { display: flex; flex-direction: column; gap: 9px; margin-top: 6px; }
+.bar-item { display: flex; flex-direction: column; gap: 4px; }
+.bar-label-row { display: flex; justify-content: space-between; align-items: center; }
+.bar-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-secondary); letter-spacing: 0.5px; }
+.bar-value { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--accent); font-weight: 500; }
+.bar-track { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.05); width: 100%; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+.bar-fill.electric { background: var(--electric); }
+.bar-fill.purple { background: var(--purple); }
+.card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; }
+.card.electric-border { border-color: var(--electric-border); }
+.card.purple-border { border-color: var(--purple-border); }
+.card-tag { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.card-tag.electric { color: var(--electric); }
+.card-tag.purple { color: var(--purple); }
+.card-text { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--text-secondary); line-height: 1.5; }
+.card-text strong { color: var(--text-primary); }
+.list-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 5px; flex-shrink: 0; }
+.dot.electric { background: var(--electric); }
+.dot.purple { background: var(--purple); }
+.list-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-secondary); line-height: 1.5; }
+.list-text strong { color: var(--text-primary); }
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.compare-col { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.compare-col.highlight { border-color: var(--electric-border); background: var(--electric-soft); }
+.compare-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: var(--text-tertiary); }
+.compare-label.electric { color: var(--electric); }
+.compare-item { font-family: 'Inter', sans-serif; font-size: 9px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 4px; }
+.compare-item strong { color: var(--text-primary); }
+.cta-btn { background: var(--accent); border-radius: 8px; padding: 11px 16px; width: 100%; margin-top: 12px; }
+.cta-btn p { color: #1C1410; font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 2px; }
+.cta-btn small { color: rgba(28,20,16,0.55); font-family: 'DM Mono', monospace; font-size: 9px; }
+.source { font-family: 'DM Mono', monospace; font-size: 7.5px; color: var(--source-color); letter-spacing: 0.5px; margin-top: auto; padding-top: 8px; border-top: 0.5px solid var(--border); line-height: 1.5; }
+.slide-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 0.5px solid var(--border); }
+.footer-handle { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--accent); opacity: 0.4; letter-spacing: 1.5px; text-transform: lowercase; }
+.slide-label { text-align: center; color: rgba(237,224,208,0.20); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; font-family: 'DM Mono', monospace; }
+.h-line { width: 100%; height: 0.5px; background: var(--border); margin: 10px 0; }
+.hi { color: var(--accent-bright); }
+.hi-electric { color: var(--electric); }
+.hi-purple { color: var(--purple); }
+.body-text { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+.big-icon { font-size: 48px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<p class="page-title">Carrusel @soy.leo_ai — BORRADOR — 05.05.2026</p>
+<div class="slides-grid">
+
+<!-- ============================================================ -->
+<!-- SLIDE 1 — PORTADA -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="bg-glow-accent"></div>
+  <div class="inner between">
+    <div>
+      <div class="badge">Nuevo curso</div>
+      <div class="headline" style="font-size:26px;">
+        De <em>0</em> a <em>Prompt</em><br>en arquitectura
+      </div>
+      <div class="body-text" style="margin-top:8px; font-size:10px;">
+        Aprende a usar IA en tu estudio.<br>Sin tecnicismos. Paso a paso.
+      </div>
+    </div>
+    <div class="source"> @soy.leo_ai </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">01 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Portada</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2 — QUÉ APRENDES -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="bg-glow-electric"></div>
+  <div class="inner top">
+    <div class="badge electric">Que aprendes</div>
+    <div class="subhead" style="font-size:15px;">6 sesiones<br>100% practicas</div>
+    <div class="list-item"><div class="dot electric"></div><div class="list-text"><strong>Presupuestos</strong> con IA en minutos</div></div>
+    <div class="list-item"><div class="dot electric"></div><div class="list-text"><strong>Visualizaciones</strong> que impresionan</div></div>
+    <div class="list-item"><div class="dot electric"></div><div class="list-text"><strong>Presentaciones</strong> a clientes</div></div>
+    <div class="list-item"><div class="dot electric"></div><div class="list-text"><strong>Automatizacion</strong> de tareas</div></div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">02 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Que aprendes</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3 — PARA QUIEN -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="inner top">
+    <div class="badge">Para quien</div>
+    <div class="big-icon">🏗️</div>
+    <div class="subhead" style="font-size:14px; margin-bottom:12px;">Arquitectos que no usan IA</div>
+    <div class="card" style="background:var(--bg-tertiary); border-color:var(--accent-dim);">
+      <div class="card-tag">Perfil ideal</div>
+      <div class="card-text">
+        Tenes un estudio propio o trabajando en uno.<br>
+        Queres <strong>agilizar</strong> tu flujo.<br>
+        Pero <strong>no sabes por donde empezar</strong>.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">03 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Para quien</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4 — PROBLEMA ACTUAL -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="inner top">
+    <div class="badge purple">El problema</div>
+    <div class="subhead" style="font-size:14px;">Sos arquitect@<br>pero seguis trabajando como en 2015</div>
+    <div class="bar-row" style="margin-top:10px;">
+      <div class="bar-item">
+        <div class="bar-label-row">
+          <span class="bar-label">Horas en documentos</span>
+          <span class="bar-value">+8 hs</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:65%;"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-label-row">
+          <span class="bar-label">Dibujo manual/rendering</span>
+          <span class="bar-value">+6 hs</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:50%;"></div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:10px; background:var(--accent-ghost);">
+      <div class="card-text" style="font-size:9px; text-align:center; color:var(--text-primary);">
+        <em>"Tengo una idea pero no tengo tiempo de ejecutarla"</em>
+      </div>
+    </div>
+    <div class="source" style="margin-top:auto;"> TU ACTUAL </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">04 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Problema</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5 — COMO CAMBIA CON IA -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="bg-glow-electric"></div>
+  <div class="inner top">
+    <div class="badge electric">Con IA</div>
+    <div class="subhead" style="font-size:14px;">Lo que antes tardabas<br>horas, ahora son minutos</div>
+    <div class="bar-row" style="margin-top:10px;">
+      <div class="bar-item">
+        <div class="bar-label-row">
+          <span class="bar-label">Presupuesto</span>
+          <span class="bar-value">-70%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill electric" style="width:70%;"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-label-row">
+          <span class="bar-label">Visualizacion</span>
+          <span class="bar-value">-80%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill electric" style="width:80%;"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-label-row">
+          <span class="bar-label">Presentacion</span>
+          <span class="bar-value">-60%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill electric" style="width:60%;"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">05 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Con IA</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6 — METODOLOGIA -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="inner top">
+    <div class="badge purple">Metodo</div>
+    <div class="subhead" style="font-size:14px;">No aprendes herramientas.<br>Aprendes un <em>sistema</em>.</div>
+    <div class="card" style="margin-top:8px;">
+      <div class="card-tag purple">Semana 1-2</div>
+      <div class="card-text"><strong>Foundations</strong> — prompt basico y intermedio</div>
+    </div>
+    <div class="card" style="margin-top:4px;">
+      <div class="card-tag purple">Semana 3-4</div>
+      <div class="card-text"><strong>Workflows</strong> — flujos para tu studio</div>
+    </div>
+    <div class="card" style="margin-top:4px;">
+      <div class="card-tag purple">Semana 5-6</div>
+      <div class="card-text"><strong>Integracion</strong> — conecta todo a tu dia a dia</div>
+    </div>
+    <div class="source" style="margin-top:auto;"> 6 semanas • 2hs/semana </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">06 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Metodo</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7 — TESTIMONIO -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="bg-glow-purple"></div>
+  <div class="inner center">
+    <div class="badge purple">Testimonio</div>
+    <div class="body-text" style="font-size:11px; text-align:center; font-style:italic; color:var(--text-primary); margin: 12px 0;">
+      "A los 2 dias ya estaba usando<br>IA para mis presupuestos.<br><br>El curso me dio exactamente<br>lo que necesitaba."
+    </div>
+    <div class="divider" style="width:16px; margin: 12px auto;"></div>
+    <div style="text-align:center;">
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text-primary);">Arq. Maria Gonzalez</div>
+      <div style="font-family:'DM Mono',monospace; font-size:8px; color:var(--text-tertiary);">Estudio propio, Buenos Aires</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">07 / 08</span>
+  </div>
+</div>
+<p class="slide-label">Testimonio</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8 — CTA FINAL -->
+<!-- ============================================================ -->
+<div>
+<div class="slide">
+  <div class="bg-grain"></div>
+  <div class="bg-glow-electric"></div>
+  <div class="inner">
+    <div class="divider"></div>
+    <div class="headline" style="font-size:22px; line-height:1.3;">
+      Tu turno de<br><em>empezar</em>
+    </div>
+    <div class="body-text" style="font-size:10px; margin-top:8px;">
+      Las primeras 5 vacantes tienen<br>precio especial de lanzamiento.
+    </div>
+    <div class="cta-btn">
+      <p>Escribi CURSO</p>
+      <small>y te mando los detalles</small>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="footer-handle">@soy.leo_ai</span>
+    <span class="slide-num" style="position:static;">08 / 08</span>
+  </div>
+</div>
+<p class="slide-label">CTA</p>
+</div>
+
+</div><!-- /slides-grid -->
+<!-- ========================================================== BORRADOR LISTO — Carrusel @soy.leo_ai — 05/05/2026 Textos y layout para revisar. Cuando apruebes, deci EXPORTAR y genero los PNG en alta calidad. ========================================================== -->
+</body>
+</html>
