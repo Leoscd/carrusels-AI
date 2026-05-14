@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrusel 6 - Auditoría de Planos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --night:        #171614;
+            --smoky:        #100C0B;
+            --eerie-black:  #1C1B17;
+            --eerie-light:  #282723;
+            --hot-orange:   #EB4604;
+            --orange-wheel: #F77E0D;
+            --moss:         #99A57D;
+            --white:        #FFFFFF;
+            --cream:        #F5F0E8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 40px;
+            font-family: 'Inter', sans-serif;
+            color: var(--white);
+            gap: 0;
+        }
+
+        /* ── CONTROLS ── */
+        .controls {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 28px;
+            background: var(--hot-orange);
+            border: 3px solid var(--hot-orange);
+            cursor: pointer;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--night);
+        }
+
+        button:hover {
+            background: var(--night);
+            color: var(--hot-orange);
+        }
+
+        .carousel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        /* ── SLIDE BASE ── */
+        .slide {
+            width: 1080px;
+            height: 1350px;
+            background: var(--night);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 72px;
+            overflow: hidden;
+        }
+
+        /* ── SLIDE HEADER ── */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .slide-tag {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: var(--moss);
+            text-transform: uppercase;
+        }
+
+        .slide-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            color: var(--moss);
+        }
+
+        .header-rule {
+            width: 100%;
+            height: 3px;
+            background: var(--hot-orange);
+            margin-bottom: 50px;
+            flex-shrink: 0;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            margin-top: auto;
+            border-top: 3px solid var(--hot-orange);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .handle {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: var(--moss);
+            text-transform: uppercase;
+        }
+
+        .foot-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--white);
+        }
+
+        /* ── TYPOGRAPHY ── */
+        h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 110px;
+            line-height: 0.88;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+
+        h1 .accent { color: var(--hot-orange); }
+
+        .subtext {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 30px;
+            color: var(--moss);
+            line-height: 1.4;
+        }
+
+        /* ── CONTENT AREA ── */
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── NUMBERED LIST ── */
+        .num-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .num-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--eerie-light);
+            font-family: 'Inter', sans-serif;
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--cream);
+        }
+
+        .num-item:first-child {
+            border-top: 1px solid var(--eerie-light);
+        }
+
+        .num-item .n {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--hot-orange);
+            min-width: 40px;
+            padding-top: 4px;
+        }
+
+        /* ── STAT BOX ── */
+        .stat-box {
+            border: 3px solid var(--hot-orange);
+            padding: 32px 40px;
+            margin-top: 40px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 24px;
+        }
+
+        .stat-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 100px;
+            line-height: 0.9;
+            color: var(--hot-orange);
+        }
+
+        .stat-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 5px;
+            color: var(--moss);
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        /* ── ALERT BOX ── */
+        .alert-box {
+            border: 3px solid var(--hot-orange);
+            padding: 24px 32px;
+            margin-top: 48px;
+        }
+
+        .alert-text {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 52px;
+            color: var(--hot-orange);
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--moss);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 16px;
+        }
+
+        /* ── PASO (STEP) ── */
+        .paso {
+            border-left: 4px solid var(--hot-orange);
+            padding-left: 28px;
+            margin-bottom: 36px;
+        }
+
+        .paso-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 5px;
+            color: var(--moss);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .paso-text {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 52px;
+            line-height: 1;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        /* ── CHECKLIST ── */
+        .check-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 22px 28px;
+            margin-bottom: 16px;
+            border-left: 4px solid;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: var(--white);
+        }
+
+        .check-item.ok {
+            border-left-color: var(--hot-orange);
+            background: var(--eerie-black);
+        }
+
+        .check-item.fail {
+            border-left-color: var(--eerie-light);
+            color: var(--eerie-light);
+        }
+
+        .check-item.warn {
+            border-left-color: var(--moss);
+            color: var(--moss);
+        }
+
+        .check-icon {
+            font-size: 40px;
+            min-width: 48px;
+        }
+
+        /* ── CTA SLIDE ── */
+        .slide.cta-slide {
+            background: var(--hot-orange);
+        }
+
+        .slide.cta-slide .slide-tag  { color: var(--night); }
+        .slide.cta-slide .slide-num  { color: var(--night); }
+        .slide.cta-slide .header-rule { background: var(--night); }
+        .slide.cta-slide .footer     { border-top: 3px solid var(--night); }
+        .slide.cta-slide .handle     { color: var(--night); }
+        .slide.cta-slide .foot-num   { color: var(--night); }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="downloadAll()">Descargar todos los slides</button>
+    </div>
+
+    <div class="carousel-container" id="carousel">
+
+        <!-- ══════════════════════════════════
+             SLIDE 1 — HOOK
+        ══════════════════════════════════ -->
+        <div class="slide" id="slide1">
+            <div class="slide-header">
+                <span class="slide-tag">AUDITORÍA — IA</span>
+                <span class="slide-num">01</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content" style="flex-grow:1;">
+                <h1 style="font-size:98px;">TUS PLANOS<br><span class="accent">AUDITADOS</span><br>CONTRA<br>ORDENANZAS</h1>
+                <p class="subtext" style="margin-top:28px;">Sin revisor humano,<br>sin sorpresas en municipalidad</p>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">01</span>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             SLIDE 2 — PROBLEMA
+        ══════════════════════════════════ -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <span class="slide-tag">EL PROBLEMA</span>
+                <span class="slide-num">02</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <h1>EL PROCESO<br>MANUAL</h1>
+
+                <div style="justify-content: flex-start; padding-top: 44px; display: flex; flex-direction: column;">
+                    <ul class="num-list">
+                        <li class="num-item"><span class="n">01</span>Lees el plano</li>
+                        <li class="num-item"><span class="n">02</span>Abrís ordenanza (30+ págs)</li>
+                        <li class="num-item"><span class="n">03</span>Checkeás cada punto</li>
+                        <li class="num-item"><span class="n">04</span>Anotás incumplimientos</li>
+                        <li class="num-item"><span class="n">05</span>Comunicás cambios</li>
+                    </ul>
+
+                    <div class="stat-box">
+                        <span class="stat-num">4–6 HRS</span>
+                        <span class="stat-label">POR<br>PROYECTO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">02</span>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             SLIDE 3 — REALIDAD
+        ══════════════════════════════════ -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <span class="slide-tag">LA REALIDAD</span>
+                <span class="slide-num">03</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <h1>NORMATIVAS<br>COMPLEJAS</h1>
+
+            <div class="content" style="justify-content: flex-start; padding-top: 28px; flex-grow:1;">
+                <p class="section-label">EJEMPLO TUCUMÁN:</p>
+                <ul class="num-list">
+                    <li class="num-item" style="padding:14px 0;"><span class="n">01</span>Retiros mínimos por zona</li>
+                    <li class="num-item" style="padding:14px 0;"><span class="n">02</span>Alturas máximas según rubro</li>
+                    <li class="num-item" style="padding:14px 0;"><span class="n">03</span>Densidades de ocupación</li>
+                    <li class="num-item" style="padding:14px 0;"><span class="n">04</span>Aberturas mínimas (luz/vent)</li>
+                </ul>
+
+                <div class="alert-box" style="margin-top:36px;">
+                    <p class="alert-text">1 ERROR = RECHAZO MUNICIPAL</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">03</span>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             SLIDE 4 — SOLUCIÓN
+        ══════════════════════════════════ -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <span class="slide-tag">LA SOLUCIÓN</span>
+                <span class="slide-num">04</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <h1 style="font-size: 100px;">SKILL: <span class="accent">CLAUDE</span><br>+ ORDENANZAS</h1>
+
+            <div class="content" style="justify-content: flex-start; padding-top: 52px;">
+                <div class="paso">
+                    <p class="paso-label">PASO 01</p>
+                    <p class="paso-text">Armé skill con ordenanzas locales</p>
+                </div>
+                <div class="paso">
+                    <p class="paso-label">PASO 02</p>
+                    <p class="paso-text">Subo foto/PDF del plano</p>
+                </div>
+                <div class="paso">
+                    <p class="paso-label">PASO 03</p>
+                    <p class="paso-text">Claude contrasta contra la norma</p>
+                </div>
+                <div class="paso" style="margin-bottom: 0;">
+                    <p class="paso-label">PASO 04</p>
+                    <p class="paso-text">Reporte automático de cumplimiento</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">04</span>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             SLIDE 5 — RESULTADO
+        ══════════════════════════════════ -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <span class="slide-tag">EL RESULTADO</span>
+                <span class="slide-num">05</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <h1>RESULTADO<br>DEL ANÁLISIS</h1>
+
+            <div class="content" style="justify-content: flex-start; padding-top: 52px;">
+                <ul class="check-list">
+                    <li class="check-item ok">
+                        <span class="check-icon">✓</span>
+                        <span>Requisitos cumplidos</span>
+                    </li>
+                    <li class="check-item fail">
+                        <span class="check-icon">✗</span>
+                        <span>Incumplimientos detectados</span>
+                    </li>
+                    <li class="check-item warn">
+                        <span class="check-icon">!</span>
+                        <span>Sugerencias de cambios</span>
+                    </li>
+                </ul>
+
+                <p style="font-family:'Inter',sans-serif; font-size:30px; color:var(--cream); line-height:1.4; margin-top: 48px;">
+                    Listo para volver a diseño<br>con instrucciones claras
+                </p>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">05</span>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             SLIDE 6 — CTA (FONDO ORANGE)
+        ══════════════════════════════════ -->
+        <div class="slide cta-slide" id="slide6">
+            <div class="slide-header">
+                <span class="slide-tag">EMPEZÁ HOY</span>
+                <span class="slide-num">06</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content" style="justify-content: center;">
+                <h1 style="font-size: 95px; color: var(--night); letter-spacing: -2px; line-height: 0.88;">
+                    ¿CANSADO<br>DE LOS<br>RECHAZOS<br>MUNICIPALES?
+                </h1>
+
+                <p style="font-family:'Inter',sans-serif; font-weight:400; font-size:32px; color:var(--night); margin-top:32px; line-height:1.3;">
+                    Automatizá tu auditoría normativa
+                </p>
+
+                <div style="border: 4px solid var(--night); padding: 30px 50px; margin-top: 52px; display: inline-block;">
+                    <span style="font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:38px; letter-spacing:3px; text-transform:uppercase; color:var(--night);">
+                        CONSULTÁ EN DM
+                    </span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="handle">@soy.leo_ai</span>
+                <span class="foot-num">06</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function downloadAll() {
+            const container = document.getElementById('carousel');
+            const slides = container.querySelectorAll('.slide');
+
+            for (let i = 0; i < slides.length; i++) {
+                const bg = slides[i].classList.contains('cta-slide') ? '#EB4604' : '#171614';
+
+                const canvas = await html2canvas(slides[i], {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: bg
+                });
+
+                const link = document.createElement('a');
+                link.download = `carrusel_auditoria_slide_${(i + 1).toString().padStart(2, '0')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                await new Promise(r => setTimeout(r, 400));
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Plantillas — Soy Leo AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --night:        #171614;
+            --smoky:        #100C0B;
+            --eerie-black:  #1C1B17;
+            --eerie-light:  #282723;
+            --hot-orange:   #EB4604;
+            --orange-wheel: #F77E0D;
+            --moss:         #99A57D;
+            --white:        #FFFFFF;
+            --cream:        #F5F0E8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 40px;
+            font-family: 'Inter', sans-serif;
+            color: var(--white);
+            gap: 0;
+        }
+
+        .page-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 48px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            color: var(--white);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 18px;
+            color: var(--moss);
+            margin-bottom: 72px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .template-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 80px;
+            width: 1080px;
+        }
+
+        .template-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 5px;
+            color: var(--moss);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .template-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--hot-orange);
+            padding-left: 16px;
+        }
+
+        /* ─── BASE SLIDE ─── */
+        .slide {
+            width: 1080px;
+            height: 1350px;
+            background: var(--night);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 72px;
+        }
+
+        /* ─── HEADER ─── */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .slide-tag {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: var(--moss);
+            text-transform: uppercase;
+        }
+
+        .slide-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            color: var(--moss);
+        }
+
+        .header-rule {
+            width: 100%;
+            height: 3px;
+            background: var(--hot-orange);
+            margin-bottom: 50px;
+            flex-shrink: 0;
+        }
+
+        /* ─── CONTENT ─── */
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── FOOTER ─── */
+        .footer {
+            margin-top: auto;
+            border-top: 3px solid var(--hot-orange);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .handle {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: var(--moss);
+            text-transform: uppercase;
+        }
+
+        .foot-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--white);
+        }
+
+        /* ─── H1 ─── */
+        h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.88;
+            color: var(--white);
+        }
+
+        h1 .accent { color: var(--hot-orange); }
+
+        /* ─── NUMBERED LIST ─── */
+        .num-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .num-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--eerie-light);
+            font-family: 'Inter', sans-serif;
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.2;
+        }
+
+        .num-item:first-child {
+            border-top: 1px solid var(--eerie-light);
+        }
+
+        .num-item .n {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--hot-orange);
+            min-width: 44px;
+            padding-top: 5px;
+            flex-shrink: 0;
+        }
+
+        /* ─── PASO ─── */
+        .paso {
+            border-left: 4px solid var(--hot-orange);
+            padding-left: 28px;
+            margin-bottom: 40px;
+        }
+
+        .paso:last-child { margin-bottom: 0; }
+
+        .paso-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 5px;
+            color: var(--moss);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .paso-text {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 52px;
+            line-height: 1;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        /* ─── LABEL TAG ─── */
+        .label-tag {
+            display: inline-block;
+            background: var(--hot-orange);
+            color: var(--night);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 6px 20px;
+            transform: rotate(-1.5deg);
+        }
+
+        /* ─── STAT HERO ─── */
+        .stat-hero {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 180px;
+            letter-spacing: -6px;
+            line-height: 0.88;
+            color: var(--hot-orange);
+            text-transform: uppercase;
+        }
+
+        .stat-sublabel {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--moss);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-top: 16px;
+        }
+
+        .stat-hrule {
+            width: 100%;
+            border: none;
+            border-top: 3px solid var(--hot-orange);
+            margin: 44px 0;
+        }
+
+        /* ─── CTA SLIDE ─── */
+        .slide.cta-slide {
+            background: var(--hot-orange);
+        }
+
+        .slide.cta-slide .slide-tag { color: var(--night); }
+        .slide.cta-slide .slide-num { color: var(--night); }
+        .slide.cta-slide .header-rule { background: var(--night); }
+        .slide.cta-slide .footer { border-top: 3px solid var(--night); }
+        .slide.cta-slide .handle { color: var(--night); }
+        .slide.cta-slide .foot-num { color: var(--night); }
+
+        /* ─── COLUMNAS LAYOUT ─── */
+        .col-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px 40px;
+            overflow: hidden;
+        }
+
+        .col-night  { background: var(--night); }
+        .col-orange { background: var(--hot-orange); }
+        .col-cream  { background: var(--cream); }
+
+        .col-vert-text {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 80px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.88;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .col-bottom-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 1.3;
+        }
+
+        .col-night .col-vert-text  { color: var(--white); }
+        .col-night .col-bottom-text { color: var(--moss); }
+
+        .col-orange .col-vert-text  { color: var(--night); }
+        .col-orange .col-bottom-text { color: var(--night); }
+
+        .col-cream .col-vert-text  { color: var(--night); }
+        .col-cream .col-bottom-text { color: var(--eerie-black); }
+
+        /* col layout: top accent bar on each col */
+        .col::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            flex-shrink: 0;
+        }
+
+        .col-night::before  { background: var(--hot-orange); }
+        .col-orange::before { background: var(--night); }
+        .col-cream::before  { background: var(--night); }
+
+        /* ─── SLIDE COL OVERLAY (for footer/handle) ─── */
+        .col-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px 32px;
+            border-top: 3px solid rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .col-handle {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: var(--night);
+            text-transform: uppercase;
+            background: var(--cream);
+            padding: 4px 12px;
+        }
+
+        .col-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            color: var(--white);
+            background: var(--night);
+            padding: 4px 12px;
+        }
+
+        /* stats-wrap */
+        .stats-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .equals-sign {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 80px;
+            color: var(--moss);
+            line-height: 1;
+            margin: 4px 0;
+        }
+
+        /* cta inner */
+        .cta-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .cta-inner h1 {
+            color: var(--night);
+            font-size: 110px;
+        }
+
+        .cta-sub {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 32px;
+            color: var(--night);
+            margin-top: 36px;
+            line-height: 1.3;
+        }
+
+        .cta-box {
+            border: 4px solid var(--night);
+            padding: 30px 50px;
+            margin-top: 56px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 38px;
+            color: var(--night);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* portada extras */
+        .portada-kicker {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 5px;
+            color: var(--moss);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .portada-sub {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 30px;
+            color: var(--cream);
+            margin-top: 32px;
+            line-height: 1.35;
+        }
+
+        /* separador horizontal brutalista */
+        .h-rule {
+            width: 100%;
+            border: none;
+            border-top: 3px solid var(--eerie-light);
+            margin: 32px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-title">Biblioteca de Plantillas</div>
+    <div class="page-subtitle">Sistema de diseño brutalista — @soy.leo_ai</div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 1 — COLUMNAS VERTICALES
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 01</div>
+        <div class="template-name">Columnas verticales</div>
+        <div class="slide" style="padding: 0;">
+            <div class="col-layout">
+                <div class="col col-night">
+                    <div class="col-vert-text">DISEÑO</div>
+                    <div class="col-bottom-text">Arquitectura<br>+ IA</div>
+                </div>
+                <div class="col col-orange">
+                    <div class="col-vert-text">SIN</div>
+                    <div class="col-bottom-text">Límites<br>reales</div>
+                </div>
+                <div class="col col-cream">
+                    <div class="col-vert-text">LÍMITES</div>
+                    <div class="col-bottom-text">Mayo<br>2026</div>
+                </div>
+            </div>
+            <div class="col-footer">
+                <div class="col-handle">@soy.leo_ai</div>
+                <div class="col-num">01</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 2 — PORTADA ESTÁNDAR
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 02</div>
+        <div class="template-name">Portada estándar</div>
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Tema — Subtema</span>
+                <span class="slide-num">01</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <div class="portada-kicker">IA PARA ARQUITECTOS</div>
+                <span class="label-tag">NUEVO</span>
+                <h1 style="font-size: 110px; margin-top: 28px;">
+                    TÍTULO<br>
+                    PRINCIPAL<br>
+                    <span class="accent">AQUÍ</span>
+                </h1>
+                <p class="portada-sub">
+                    Subtítulo o bajada explicativa<br>en dos líneas máximo
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="foot-num">01</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 3 — LISTA NUMERADA
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 03</div>
+        <div class="template-name">Lista numerada</div>
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Tema — Sección</span>
+                <span class="slide-num">02</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <h1 style="font-size: 95px; margin-bottom: 52px;">
+                    LOS<br>
+                    <span class="accent">5 PASOS</span><br>
+                    CLAVE
+                </h1>
+
+                <ul class="num-list">
+                    <li class="num-item">
+                        <span class="n">01</span>
+                        Definir el objetivo del proyecto
+                    </li>
+                    <li class="num-item">
+                        <span class="n">02</span>
+                        Preparar los materiales de entrada
+                    </li>
+                    <li class="num-item">
+                        <span class="n">03</span>
+                        Configurar el flujo con Claude
+                    </li>
+                    <li class="num-item">
+                        <span class="n">04</span>
+                        Revisar y ajustar el resultado
+                    </li>
+                    <li class="num-item">
+                        <span class="n">05</span>
+                        Entregar y documentar
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="foot-num">02</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 4 — STAT / NÚMERO GRANDE
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 04</div>
+        <div class="template-name">Stat / número grande</div>
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">El resultado</span>
+                <span class="slide-num">04</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <div class="stats-wrap">
+
+                    <div class="stat-sublabel">DE TRABAJO MANUAL</div>
+                    <div class="stat-hero">6 HRS</div>
+
+                    <hr class="stat-hrule">
+
+                    <div class="equals-sign">=</div>
+
+                    <div class="stat-hero">8 MIN</div>
+                    <div class="stat-sublabel">CON IA</div>
+
+                    <p style="font-family:'Inter',sans-serif; font-weight:400; font-size:32px; color:var(--cream); margin-top:48px; line-height:1.35;">
+                        Por cada auditoría normativa<br>que delegues a Claude
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="foot-num">04</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 5 — PASO A PASO
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 05</div>
+        <div class="template-name">Paso a paso</div>
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">La solución</span>
+                <span class="slide-num">03</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <h1 style="font-size: 95px; margin-bottom: 64px;">
+                    ASÍ LO<br>
+                    <span class="accent">HACÉS</span>
+                </h1>
+
+                <div>
+                    <div class="paso">
+                        <div class="paso-label">PASO 01</div>
+                        <div class="paso-text">Definís la tarea en lenguaje natural</div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-label">PASO 02</div>
+                        <div class="paso-text">Claude procesa en background</div>
+                    </div>
+                    <div class="paso">
+                        <div class="paso-label">PASO 03</div>
+                        <div class="paso-text">Recibís el resultado listo para usar</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="foot-num">03</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LAYOUT 6 — CTA (FONDO FULL ORANGE)
+    ══════════════════════════════════════════════════════ -->
+    <div class="template-block">
+        <div class="template-label">Layout 06</div>
+        <div class="template-name">CTA — siempre el último slide</div>
+        <div class="slide cta-slide">
+            <div class="slide-header">
+                <span class="slide-tag">EMPEZÁ HOY</span>
+                <span class="slide-num">06</span>
+            </div>
+            <div class="header-rule"></div>
+
+            <div class="content">
+                <div class="cta-inner">
+                    <h1>
+                        ¿LISTO<br>
+                        PARA<br>
+                        PROBAR<br>
+                        LA IA?
+                    </h1>
+
+                    <p class="cta-sub">
+                        Te acompaño paso a paso<br>desde el principio
+                    </p>
+
+                    <div class="cta-box">
+                        ESCRIBIME POR DM
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="handle">@soy.leo_ai</div>
+                <div class="foot-num">06</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
